@@ -1,9 +1,20 @@
+<!DOCTYPE html>
 <html>
-    <head>
-    </head>
-    <body>
-        <h2>BUG EYES</h2>
-        <button href="/login">login</button>
-        <button href="/signup">signup</button>
-    </body>
+	<head>
+		<title>BugEyes</title>
+	</head>
+	<body>
+		<h2>Bug Logs</h2>
+		<center>
+			{% for c in content %}
+				<div style="display:inline-block;">
+					<video width="320" height="240" controls>
+					<source src="{{ url_for('static', filename=c)}}" type="video/mp4">
+					Your browser does not support the video tag.
+					</video>
+					<p>{{c}}</p>
+				</div>
+			{% endfor %}
+		</center>
+	</body>
 </html>
