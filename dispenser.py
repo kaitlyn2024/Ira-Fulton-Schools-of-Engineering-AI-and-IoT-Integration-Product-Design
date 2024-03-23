@@ -1,4 +1,5 @@
 #Spencer
+#theoretical code for dispenser
 import RPi.GPIO as GPIO
 import time
 
