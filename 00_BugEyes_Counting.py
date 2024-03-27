@@ -152,22 +152,21 @@ def loop():
 		
 		# Calls methods for Humiture and Ultrasonic Sensor
 		result = read_dht11_dat()
-		dis = distance()
-		time.sleep(0.3)
-
+		dis = distance()		
+		time.sleep(0.1)
+		
 		# Detects when a bug is first spotted at the enterance, this data is used to determine which way the bug is heading
 		# If the Bug is first spotted by the Obstacle Sensor (which is on the outside of the house) and then the Ultrasonic Sensor (which is inside the house) we know that a bug has entered
-		while (0 == GPIO.input(ObstaclePin) and dis >= 18):
+		while (0 == GPIO.input(ObstaclePin) and dis >= 4.5):
 			# We keep track of which sensor detected the bug first using bugAtEntrance
 			bugAtEntrance = 1
-			dis = distance()
+			dis = distance()			
 			result = read_dht11_dat()
-			time.sleep(0.1)
 		
 		# If a bug has been previously spotted noted by bugAtEntrance AND there are no bugsAtExit AND
 		# The IR Sensor AND Ultrasonic Sensor then we know that a bug has officially entered the house
-		while (0 == GPIO.input(ObstaclePin) and dis < 18 and bugAtEntrance == 1 and bugAtExit == 0):
-			dis = distance()
+		while (0 == GPIO.input(ObstaclePin) and dis < 4.5 and bugAtEntrance == 1 and bugAtExit == 0):
+			dis = distance()			
 			totalBugs = totalBugs + 1
 			bugAtEntrance = 0
 			print ("Bug Entered , Total Bugs: ", totalBugs)
@@ -178,17 +177,16 @@ def loop():
 				humidity, temperature = result
 				print ("humidity: %s %%,  Temperature: %s C`" % (humidity, temperature))
 				print ("\n")
-			time.sleep(0.1)
+			time.sleep(1)
 
 		# A bug is detected by the Ultrasonic Sensor before the IR Sensor meaning that a bug is trying to leave	
-		while (1 == GPIO.input(ObstaclePin) and dis < 18):
-			dis = distance()
+		while (1 == GPIO.input(ObstaclePin) and dis < 4.5):
+			dis = distance()			
 			bugAtExit = 1
 			result = read_dht11_dat()
-			time.sleep(0.1)
 
 		# A bug is then detected by both sensors with the intent to leave meaning that it has exited the house				
-		while (0 == GPIO.input(ObstaclePin) and dis < 18 and bugAtEntrance == 0 and bugAtExit == 1):
+		while (0 == GPIO.input(ObstaclePin) and dis < 4.5 and bugAtEntrance == 0 and bugAtExit == 1):
 			dis = distance()
 			if(totalBugs != 0):
 				totalBugs = totalBugs - 1
@@ -201,14 +199,15 @@ def loop():
 				print ("\n")
 				
 			bugAtExit = 0
-			time.sleep(0.1)
+			time.sleep(1)
 
 		# This case should never happen but is included to avoid the program stalling	
 		while(bugAtEntrance == 1 and bugAtExit == 1):
 			bugAtExit = 0
 			bugAtEntrance = 0
+			dis = distance()
 			result = read_dht11_dat()
-			time.sleep(0.1)
+			time.sleep(1)
 	
         
 def destroy():
