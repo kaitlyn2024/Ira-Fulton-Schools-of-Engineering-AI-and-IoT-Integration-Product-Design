@@ -144,7 +144,8 @@ def loop():
 	# CUSTOM CODE STARTS HERE
 	# When this loop starts there will be initally no bugs
 	totalBugs = 0
-	
+	result = read_dht11_dat()
+
 	# While the code is not being interupted by keyboard input this will be repeated
 	while True:
 		bugAtEntrance = 0
@@ -162,7 +163,7 @@ def loop():
 			bugAtEntrance = 1
 			dis = distance()			
 			result = read_dht11_dat()
-		
+			
 		# If a bug has been previously spotted noted by bugAtEntrance AND there are no bugsAtExit AND
 		# The IR Sensor AND Ultrasonic Sensor then we know that a bug has officially entered the house
 		while (0 == GPIO.input(ObstaclePin) and dis < 4.5 and bugAtEntrance == 1 and bugAtExit == 0):
@@ -173,10 +174,19 @@ def loop():
 			
 			# If a Humiture reading is available the program will print it
 			result = read_dht11_dat()
+			
 			if result:
 				humidity, temperature = result
 				print ("humidity: %s %%,  Temperature: %s C`" % (humidity, temperature))
 				print ("\n")
+			else:
+				while (not result):
+					result = read_dht11_dat()
+					if result:
+						humidity, temperature = result
+						print ("humidity: %s %%,  Temperature: %s C`" % (humidity, temperature))
+						print ("\n")
+					
 			time.sleep(1)
 
 		# A bug is detected by the Ultrasonic Sensor before the IR Sensor meaning that a bug is trying to leave	
@@ -193,10 +203,18 @@ def loop():
 			print ("Bug Left, Total Bugs: ", totalBugs)
 			
 			result = read_dht11_dat()
+
 			if result:
 				humidity, temperature = result
 				print ("humidity: %s %%,  Temperature: %s C`" % (humidity, temperature))
 				print ("\n")
+			else:
+				while (not result):
+					result = read_dht11_dat()
+					if result:
+						humidity, temperature = result
+						print ("humidity: %s %%,  Temperature: %s C`" % (humidity, temperature))
+						print ("\n")
 				
 			bugAtExit = 0
 			time.sleep(1)
@@ -208,13 +226,14 @@ def loop():
 			dis = distance()
 			result = read_dht11_dat()
 			time.sleep(1)
-	
+	 
         
 def destroy():
     GPIO.cleanup()
 
 if __name__ == "__main__":
     setup()
+    result = read_dht11_dat()
     try:
         loop()
     except KeyboardInterrupt:
