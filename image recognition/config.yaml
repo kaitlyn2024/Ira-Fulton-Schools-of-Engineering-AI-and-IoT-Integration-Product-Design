@@ -1,0 +1,6 @@
+path: C:/Users/10000/Desktop/Finished/Index/cvat
+train: images/train
+val: images/train
+names:
+  0: BUTTERFLY
+  1: ADONIS
