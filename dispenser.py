@@ -1,47 +1,24 @@
 #Spencer
-
+#theoretical code for dispenser
 import RPi.GPIO as GPIO
 import time
 
-GPIO.setmode(GPIO.BOARD)
+GPIO.setmode(GPIO.BCM)
 
-GPIO.setup(16, GPIO.OUT)
-servo1 = GPIO.PWM(16, 25)  # Lower frequency for better torque (50 Hz)
+FEED_SERVO_CONTROL_PIN = 18
+GPIO.setup(FEED_SERVO_CONTROL_PIN, GPIO.OUT)
 
-servo1.start(0)
-print('Waiting for 2 seconds')
-time.sleep(2)
+PWM_FREQUENCY = 100
+FULL_SPEED_FORWARD_DC = 20
+FULL_SPEED_BACKWARD_DC = 10
 
-print('Rotating to the maximum torque position')
+pwm = GPIO.PWM(FEED_SERVO_CONTROL_PIN, PWM_FREQUENCY)
+pwm.start(FULL_SPEED_FORWARD_DC)
 
-duty = 2
+time.sleep(3)
 
-# Simulate gear reduction by slowing down the movement
-while duty <= 12:
-    servo1.ChangeDutyCycle(duty)
-    time.sleep(0.2)  # Slower movement for more torque
-    duty += 1
+pwm.ChangeDutyCycle(FULL_SPEED_BACKWARD_DC)time.sleep(3)
 
-# Give the servo more time to exert force
-time.sleep(1)
-
-
-# Return to neutral position slowly
-print('Turning back to neutral position')
-for _ in range(7, 2, -1):
-    servo1.ChangeDutyCycle(_)  # Decreasing duty cycle for slower return
-    time.sleep(0.2)
-
-time.sleep(2)
-
-print('Returning to the starting position')
-# Return to the starting position slowly
-for _ in range(2, 0, -1):
-    servo1.ChangeDutyCycle(_)  # Decreasing duty cycle for slower return
-    time.sleep(0.2)
-
-servo1.ChangeDutyCycle(0)
-
-servo1.stop()
+pwm.stop()
+time.sleep(0.5)
 GPIO.cleanup()
-

@@ -17,7 +17,6 @@ def home():
 		file_data = os.path.getctime(file_path)
 		file_date = datetime.fromtimestamp(file_data)
 		file_date = file_date.strftime("%m/%d/%Y")
-		print(file_date)
 		if file_date in times: 
 			index=times.index(file_date)
 			times_count[index]=times_count[index]+1
