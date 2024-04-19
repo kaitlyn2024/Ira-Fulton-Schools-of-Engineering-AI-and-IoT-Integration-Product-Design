@@ -29,6 +29,15 @@ STATE_DATA_FIRST_PULL_DOWN = 3
 STATE_DATA_PULL_UP = 4
 STATE_DATA_PULL_DOWN = 5
 
+# Constants for Dispenser
+GPIO.setmode(GPIO.BOARD)
+FEED_SERVO_CONTROL_PIN = 16
+GPIO.setup(FEED_SERVO_CONTROL_PIN, GPIO.OUT)
+
+PWM_FREQUENCY = 100
+FULL_SPEED_FORWARD_DC = 20
+FULL_SPEED_BACKWARD_DC = 10
+pwm = GPIO.PWM(FEED_SERVO_CONTROL_PIN, PWM_FREQUENCY)
 
 def setup():
     GPIO.setmode(GPIO.BOARD)
@@ -205,6 +214,7 @@ def loop():
 		# If a bug has been previously spotted noted by bugAtEntrance AND there are no bugsAtExit AND
 		# The IR Sensor AND Ultrasonic Sensor then we know that a bug has officially entered the house
 		while (0 == GPIO.input(ObstaclePin) and dis < 4.5 and bugAtEntrance == 1 and bugAtExit == 0):
+		
 			dis = distance()			
 			totalBugs = totalBugs + 1
 			bugAtEntrance = 0
@@ -226,6 +236,11 @@ def loop():
 						print ("humidity: %s %%,  Temperature: %s C`" % (humidity, temperature))
 						print ("\n")
 						record(humidity, temperature)
+						
+			# Code for the dispenser
+			pwm.start(FULL_SPEED_FORWARD_DC)
+			time.sleep(3)
+			pwm.ChangeDutyCycle(FULL_SPEED_BACKWARD_DC)
 			time.sleep(1)
 
 		# A bug is detected by the Ultrasonic Sensor before the IR Sensor meaning that a bug is trying to leave	
@@ -237,6 +252,8 @@ def loop():
 		# A bug is then detected by both sensors with the intent to leave meaning that it has exited the house				
 		while (0 == GPIO.input(ObstaclePin) and dis < 4.5 and bugAtEntrance == 0 and bugAtExit == 1):
 			dis = distance()
+			bugAtExit = 0
+			
 			if(totalBugs != 0):
 				totalBugs = totalBugs - 1
 			print ("Bug Left, Total Bugs: ", totalBugs)
@@ -256,7 +273,10 @@ def loop():
 						print ("\n")
 						record(humidity, temperature)
 				
-			bugAtExit = 0
+			# Code for the dispenser
+			pwm.start(FULL_SPEED_FORWARD_DC)
+			time.sleep(3)
+			pwm.ChangeDutyCycle(FULL_SPEED_BACKWARD_DC)
 			time.sleep(1)
 
 		# This case should never happen but is included to avoid the program stalling	
