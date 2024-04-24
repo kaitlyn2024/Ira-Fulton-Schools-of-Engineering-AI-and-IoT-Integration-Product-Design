@@ -8,7 +8,7 @@ from picamera2.outputs import FfmpegOutput
 
 # Constants for Camera
 picam2=None	#camera object
-duration=3	#recorded video duration (set low for testing purposes)
+duration=5	#recorded video duration (set low for testing purposes)
 dimensions=(1456, 1088) #camera resolution
 colour = (0, 255, 0)
 origin = (0, 30)
@@ -69,6 +69,7 @@ def draw(request):
 if __name__ == "__main__":
 	temperature = int(sys.argv[1])
 	humidity = int(sys.argv[2])
+	print(str(temperature)+ " "+str(humidity))
 	try:
 		if picam2==None:
 			picam2 = Picamera2()
