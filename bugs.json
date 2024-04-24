@@ -1,0 +1,15 @@
+{
+    "bug_logs": [
+        "{\"time\": \"1\", \"temperature\": \"1\", \"humidity\": \"1\", \"bug_count\": \"1\"}",
+        "{\"time\": \"1\", \"temperature\": \"1\", \"humidity\": \"1\", \"bug_count\": \"1\"}",
+        "{\"time\": \"1\", \"temperature\": \"1\", \"humidity\": \"1\", \"bug_count\": \"1\"}",
+        "{\"time\": \"1\", \"temperature\": \"26\", \"humidity\": \"23\", \"bug_count\": \"1\"}",
+        "{\"time\": \"2024-04-24\", \"temperature\": \"25\", \"humidity\": \"23\", \"bug_count\": \"1\"}",
+        "{\"time\": \"2024-04-24\", \"temperature\": \"25\", \"humidity\": \"23\", \"bug_count\": \"1\"}",
+        "{\"time\": \"2024-04-24\", \"temperature\": \"25\", \"humidity\": \"24\", \"bug_count\": \"2\"}",
+        "{\"time\": \"2024-04-24\", \"temperature\": \"25\", \"humidity\": \"24\", \"bug_count\": \"3\"}",
+        "{\"time\": \"2024-04-24\", \"temperature\": \"25\", \"humidity\": \"24\", \"bug_count\": \"4\"}",
+        "{\"time\": \"2024-04-24\", \"temperature\": \"25\", \"humidity\": \"24\", \"bug_count\": \"5\"}",
+        "{\"time\": \"2024-04-24\", \"temperature\": \"25\", \"humidity\": \"24\", \"bug_count\": \"6\"}"
+    ]
+}
