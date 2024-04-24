@@ -3,13 +3,13 @@
 
 import RPi.GPIO as GPIO
 import time
+from datetime import date
 import numpy as np
 import cv2 as cv
 from picamera2 import Picamera2, MappedArray
 from picamera2.encoders import H264Encoder
 from picamera2.outputs import FfmpegOutput
 import os
-
 
 # The Ultrasonic Distance Sensor will use GPIO.BOARD Pins 11 and 12
 TRIG = 11
@@ -31,7 +31,7 @@ STATE_DATA_PULL_DOWN = 5
 
 # Constants for Dispenser
 GPIO.setmode(GPIO.BOARD)
-FEED_SERVO_CONTROL_PIN = 16
+FEED_SERVO_CONTROL_PIN = 32
 GPIO.setup(FEED_SERVO_CONTROL_PIN, GPIO.OUT)
 
 PWM_FREQUENCY = 100
@@ -40,7 +40,6 @@ FULL_SPEED_BACKWARD_DC = 10
 pwm = GPIO.PWM(FEED_SERVO_CONTROL_PIN, PWM_FREQUENCY)
 
 def setup():
-    GPIO.setmode(GPIO.BOARD)
     GPIO.setup(TRIG, GPIO.OUT)
     GPIO.setup(ECHO, GPIO.IN)
     
@@ -65,9 +64,13 @@ def distance():
     during = time2 - time1
     return during * 340 / 2 * 100
 
-def record(humidity, temperature):
-		os.system('python stream.py ' +str(temperature)+' '+str(humidity))
-
+def record_video(humidity, temperature):
+	os.system('python stream.py ' +str(temperature)+' '+str(humidity))
+def record_data(humidity, temperature, totalBugs):
+	record_video(humidity, temperature)
+	time=date.today()
+	time = time.strftime("%m%d%Y %H%M")
+	os.system('python data.py ' +' '+str(date.today())+" "+str(temperature)+' '+str(humidity)+' '+str(totalBugs))
 
 def setup():
     GPIO.setmode(GPIO.BOARD)
@@ -223,11 +226,19 @@ def loop():
 			# If a Humiture reading is available the program will print it
 			result = read_dht11_dat()
 			
+			# Bug Threshold for dispenser
+			if totalBugs >= 1:
+				# Code for the dispenser
+				pwm.start(FULL_SPEED_FORWARD_DC)
+				time.sleep(3)
+				pwm.ChangeDutyCycle(FULL_SPEED_BACKWARD_DC)
+				time.sleep(3)
+			
 			if result:
 				humidity, temperature = result
 				print ("humidity: %s %%,  Temperature: %s C`" % (humidity, temperature))
 				print ("\n")
-				record(humidity, temperature)
+				record_data(humidity, temperature, totalBugs)
 			else:
 				while (not result):
 					result = read_dht11_dat()
@@ -235,12 +246,8 @@ def loop():
 						humidity, temperature = result
 						print ("humidity: %s %%,  Temperature: %s C`" % (humidity, temperature))
 						print ("\n")
-						record(humidity, temperature)
+						record_data(humidity, temperature, totalBugs)
 						
-			# Code for the dispenser
-			pwm.start(FULL_SPEED_FORWARD_DC)
-			time.sleep(3)
-			pwm.ChangeDutyCycle(FULL_SPEED_BACKWARD_DC)
 			time.sleep(1)
 
 		# A bug is detected by the Ultrasonic Sensor before the IR Sensor meaning that a bug is trying to leave	
@@ -259,24 +266,29 @@ def loop():
 			print ("Bug Left, Total Bugs: ", totalBugs)
 			
 			result = read_dht11_dat()
-
+			
+			# Bug Threshold for dispenser
+			if totalBugs >= 1:
+				# Code for the dispenser
+				pwm.start(FULL_SPEED_FORWARD_DC)
+				time.sleep(3)
+				pwm.ChangeDutyCycle(FULL_SPEED_BACKWARD_DC)
+				time.sleep(3)
+			
 			if result:
 				humidity, temperature = result
 				print ("humidity: %s %%,  Temperature: %s C`" % (humidity, temperature))
 				print ("\n")
-				record(humidity, temperature)
+				record_data(humidity, temperature, totalBugs)
 			else:
 				while (not result):
 					result = read_dht11_dat()
+					humidity, temperature = result
 					if result:
 						print ("humidity: %s %%,  Temperature: %s C`" % (humidity, temperature))
 						print ("\n")
-						record(humidity, temperature)
+						record_data(humidity, temperature, totalBugs)
 				
-			# Code for the dispenser
-			pwm.start(FULL_SPEED_FORWARD_DC)
-			time.sleep(3)
-			pwm.ChangeDutyCycle(FULL_SPEED_BACKWARD_DC)
 			time.sleep(1)
 
 		# This case should never happen but is included to avoid the program stalling	
