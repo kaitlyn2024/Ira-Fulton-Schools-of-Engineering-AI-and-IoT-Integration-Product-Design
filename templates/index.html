@@ -43,7 +43,7 @@
 				<h2>Latest Bug Log</h2>
 				{% for c in content %}
 					<div>
-						<video width="100%" height="240" controls autocapitalize="">
+						<video width="100%" height="240" controls>
 						<source src="{{ url_for('static', filename=c)}}" type="video/mp4">
 						Your browser does not support the video tag.
 						</video>
@@ -70,10 +70,22 @@
 				data: {
 					labels: {{times|safe}},
 					datasets: [{
-						label: 'Bug Visitation',
-						backgroundColor: 'rgba(161, 198, 247, 1)',
+						label: 'bug_count',
+						backgroundColor: 'rgba(138, 234, 146, .5)',
+						borderColor: 'rgb(138, 234, 146)',
+						data: {{bug_count|safe}},
+					},
+					{
+						label: 'humidity',
+						backgroundColor: 'rgba(252, 176, 126, .5)',
+						borderColor: 'rgb(252, 176, 126)',
+						data: {{humidity|safe}},
+					},
+					{
+						label: 'temperature',
+						backgroundColor: 'rgba(161, 198, 247, .5',
 						borderColor: 'rgb(47, 128, 237)',
-						data: {{times_count|safe}},
+						data: {{temperature|safe}},
 					}]
 				},
 				options: {
