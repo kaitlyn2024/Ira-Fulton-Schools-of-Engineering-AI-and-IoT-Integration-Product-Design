@@ -227,7 +227,7 @@ def loop():
 			result = read_dht11_dat()
 			
 			# Bug Threshold for dispenser
-			if totalBugs >= 1:
+			if totalBugs >= 5:
 				# Code for the dispenser
 				pwm.start(FULL_SPEED_FORWARD_DC)
 				time.sleep(3)
@@ -268,7 +268,7 @@ def loop():
 			result = read_dht11_dat()
 			
 			# Bug Threshold for dispenser
-			if totalBugs >= 1:
+			if totalBugs >= 5:
 				# Code for the dispenser
 				pwm.start(FULL_SPEED_FORWARD_DC)
 				time.sleep(3)
